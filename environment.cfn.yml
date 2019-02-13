@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CodeBuild Test Template
+
+Resources:
+  CodeCommitRepo:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: sls-ts-dynamodb-transactions-sample
+  LambdaExecuteServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+                - sts:AssumeRole
+      Policies: 
+        - PolicyName: sls-ts-dynamodb-transactions-sample-execute
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sls-ts-dynamodb-transactions-sample-*
+  DeployS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: sls-ts-dynamodb-transactions-sample-deploy-bucket
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+                - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: sls-ts-dynamodb-transactions-sample
+      ServiceRole: !Ref CodeBuildServiceRole
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/nodejs:8.11.0
+        EnvironmentVariables:
+          - Name: STAGE_ENV
+            Value: test
+            Type: PLAINTEXT
+          - Name: SERVICE_NAME
+            Value: sls-ts-dynamodb-transactions-sample
+            Type: PLAINTEXT
+          - Name: LAMBDA_ROLE
+            Value: !GetAtt LambdaExecuteServiceRole.Arn
+            Type: PLAINTEXT
+          - Name: DEPLOY_BUCKET
+            Value: sls-ts-dynamodb-transactions-sample-deploy-bucket
+            Type: PLAINTEXT
+      Source:
+        Type: CODECOMMIT
+        Location: https://git-codecommit.ap-northeast-1.amazonaws.com/v1/repos/sls-ts-dynamodb-transactions-sample
+        BuildSpec: buildspec.yml
+
+
