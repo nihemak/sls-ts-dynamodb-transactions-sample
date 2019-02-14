@@ -72,9 +72,10 @@ Resources:
           - Name: DEPLOY_BUCKET
             Value: sls-ts-dynamodb-transactions-sample-deploy-bucket
             Type: PLAINTEXT
+          - Name: DYNAMO_PREFIX
+            Value: sls-ts-dynamodb-transactions-sample
+            Type: PLAINTEXT
       Source:
         Type: CODECOMMIT
         Location: https://git-codecommit.ap-northeast-1.amazonaws.com/v1/repos/sls-ts-dynamodb-transactions-sample
         BuildSpec: buildspec.yml
-
-
