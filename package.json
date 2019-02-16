@@ -1,0 +1,29 @@
+{
+  "name": "sls-ts-dynamodb-transactions-sample",
+  "version": "0.0.0",
+  "description": "Serverless Typescript DynamoDB transactions sample",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.403.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.1",
+    "@types/node": "^8.0.57",
+    "@types/uuid": "^3.4.4",
+    "serverless-webpack": "^5.1.1",
+    "source-map-support": "^0.5.6",
+    "ts-loader": "^4.2.0",
+    "typescript": "^2.9.2",
+    "webpack": "^4.5.0"
+  },
+  "author": "Makoto Nihei <nihemak@gmail.com> (https://github.com/nihemak)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nihemak/sls-ts-dynamodb-transactions-sample.git"
+  }
+}

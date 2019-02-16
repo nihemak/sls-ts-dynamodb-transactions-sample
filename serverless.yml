@@ -1,0 +1,62 @@
+service:
+  name: ${env:SERVICE_NAME}
+
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ap-northeast-1
+  stage: ${env:STAGE_ENV}
+  role: ${env:LAMBDA_ROLE}
+  environment:
+    REGION: ${env:REGION}
+    DYNAMO_PREFIX : ${env:DYNAMO_PREFIX}
+  deploymentBucket:
+    name: ${env:DEPLOY_BUCKET}
+
+resources:
+  Resources:
+    TransactionCategoriesTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${env:DYNAMO_PREFIX}-transaction-categories
+    TransactionItemsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${env:DYNAMO_PREFIX}-transaction-items
+
+functions:
+  init:
+    handler: handler.init
+    events:
+      - http:
+          method: get
+          path: init
+  add:
+    handler: handler.add
+    events:
+      - http:
+          method: get
+          path: add
