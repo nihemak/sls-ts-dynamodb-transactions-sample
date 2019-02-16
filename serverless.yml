@@ -48,12 +48,6 @@ resources:
         TableName: ${env:DYNAMO_PREFIX}-transaction-items
 
 functions:
-  hello:
-    handler: handler.hello
-    events:
-      - http:
-          method: get
-          path: hello
   init:
     handler: handler.init
     events:

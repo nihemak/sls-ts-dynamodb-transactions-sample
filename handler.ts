@@ -1,19 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid';
+
 const dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10', region: process.env.REGION});
-
 const category_id = '9E66EBBF-A3AE-4490-8AC6-CB9AEC15C1F7';
-
-export const hello: APIGatewayProxyHandler = async (event, context) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Go Serverless Webpack (Typescript) v1.0! Your function executed successfully!',
-      input: event,
-    }),
-  };
-}
 
 export const init: APIGatewayProxyHandler = async (event, context) => {
   let statusCode = 200;
