@@ -20,5 +20,19 @@ cd ..
 ## Create Serverless Environment
 
 ```bash
-aws codebuild start-build --project-name sls-ts-dynamodb-transactions-sample --source-version master
+CODEBUILD_ID=$(aws codebuild start-build --project-name sls-ts-dynamodb-transactions-sample --source-version master | tr -d "\n" | jq -r '.build.id')
+echo "started.. id is ${CODEBUILD_ID}"
+while true
+do
+  sleep 10s
+  STATUS=$(aws codebuild batch-get-builds --ids "${CODEBUILD_ID}" | tr -d "\n" | jq -r '.builds[].buildStatus')
+  echo "..status is ${STATUS}."
+  if [ "${STATUS}" != "IN_PROGRESS" ]; then
+    if [ "${STATUS}" != "SUCCEEDED" ]; then
+      echo "faild."
+    fi
+    echo "done."
+    break
+  fi
+done
 ```

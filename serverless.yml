@@ -10,6 +10,9 @@ provider:
   region: ap-northeast-1
   stage: ${env:STAGE_ENV}
   role: ${env:LAMBDA_ROLE}
+  environment:
+    REGION: ${env:REGION}
+    DYNAMO_PREFIX : ${env:DYNAMO_PREFIX}
   deploymentBucket:
     name: ${env:DEPLOY_BUCKET}
 
@@ -51,3 +54,9 @@ functions:
       - http:
           method: get
           path: hello
+  init:
+    handler: handler.init
+    events:
+      - http:
+          method: get
+          path: init
